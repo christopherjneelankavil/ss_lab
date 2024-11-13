@@ -2,7 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 
-void main() {
+void main() { 
     char opcode[10], operand[10], label[10], code[10], mnemonic[10], symbol[10];
     int locctr, start, length, address;
 
