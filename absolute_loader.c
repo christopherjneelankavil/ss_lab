@@ -1,86 +1,40 @@
-// #include <stdio.h>
-// #include <string.h>
-// #include <stdlib.h>
-
-// int main() {
-//     char input[10]; 
-//     int start, length, address = 0;
-
-//     FILE *fp1, *fp2;
-//     fp1 = fopen("hello.txt", "r");
-//     fp2 = fopen("output.txt", "w");
-
-//     if (fp1 == NULL || fp2 == NULL) {
-//         printf("ERROR: Unable to open file(s)\n");
-//         return 0;
-//     }
-
-//     fscanf(fp1, "%s", input);
-//     while (strcmp(input, "E") != 0) {
-//         if (strcmp(input, "H") == 0) {
-//             fscanf(fp1, "%d %d", &start, &length);
-//             address = start;
-//         } else if (strcmp(input, "T") == 0) {
-//             fscanf(fp1, "%d", &address);
-//             for (int i = 0; i < 4; i++) {
-//                 fscanf(fp1, "%s", input); // Read two characters at a time
-//                 fprintf(fp2, "%d\t%c %c\n", address, input[0], input[1]);
-//                 address++; // Increment address after each byte
-//             }
-//         } else {
-//             fscanf(fp1, "%s", input); // Read six characters in the else case
-//             fprintf(fp2, "%d\t%c %c\n", address, input[0], input[1]);
-//             fprintf(fp2, "%d\t%c %c\n", address + 1, input[2], input[3]);
-//             fprintf(fp2, "%d\t%c %c\n", address + 2, input[4], input[5]);
-//             address += 3; // Increment by 3 after writing three pairs
-//         }
-//         fscanf(fp1, "%s", input); // Read the next input record
-//     }
-
-//     fclose(fp1);
-//     fclose(fp2);
-
-//     printf("Processing completed successfully. Output written to output.txt\n");
-//     return 0;
-// }
-
-
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-int main(){
-    char input[10];
-    FILE *fp1,*fp2;
-    int start, length, address = 0;
-    fp1 = fopen("hello.txt","r");
-    fp2 = fopen("output.txt","w");
+int main() {
+    FILE *fp1;
+    fp1 = fopen("abs_loader_input.txt", "r");
 
-    if(fp1==NULL|| fp2 == NULL){
-        return 0;
+    if (fp1 == NULL) {
+        printf("Error opening abs_loader_input.txt\n");
+        return 1;
     }
 
-    fscanf(fp1,"%s",input);
-    while (strcmp(input,"E")!=0){
-        if(strcmp(input,"H")==0){
-            fscanf(fp1,"%d %d",&start,&length);
-            address = start;
-        }else if(strcmp(input,"T")==0){
-            fscanf(fp1,"%d",&address);
-            for(int i=0;i<4;i++){
-                fscanf(fp1,"%s",input);
-                fprintf(fp2,"%d\t%c %c",address,input[0],input[1]);
-                address++;
+    char line[50], addr[7];
+    int i, j, hexaddr;
+
+    do {
+        fscanf(fp1, "%s", line);
+        if (line[0] == 'T') {
+            // Extract the address part (characters 1 to 6) from the line
+            for (i = 1, j = 0; i < 7; i++, j++) {
+                addr[j] = line[i];
             }
-        }else{
-            fprintf(fp2,"%d\t%c %c",address,input[0],input[1]);
-            fprintf(fp2,"%d\t%c %c",address+1,input[2],input[3]);
-            fprintf(fp2,"%d\t%c %c",address+2,input[4],input[5]);
+            addr[j] = '\0';  // Null-terminate the string
+            
+            // Convert the extracted address string to a hexadecimal integer
+            sscanf(addr, "%x", &hexaddr);
 
-            address+=3;
+            i = 9;  // Start reading data from index 9
+            while (line[i] != '\0') {
+                printf("%x    %c%c\n", hexaddr, line[i], line[i + 1]);
+                i += 2;
+                hexaddr++;
+            }
         }
-        fscanf(fp1,"%s",input);
-    }
+    } while (!feof(fp1));
+
+    fclose(fp1);
     return 0;
-    
 }
