@@ -3,7 +3,7 @@
 // #include <stdlib.h>
 
 // int main() {
-//     char input[10];
+//     char input[10]; 
 //     int start, length, address = 0;
 
 //     FILE *fp1, *fp2;
